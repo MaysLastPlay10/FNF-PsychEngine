@@ -13,7 +13,7 @@
     {
       "name": "flixel",
       "type": "haxelib",
-      "version": null
+      "version": "5.5.0"
     },
     {
       "name": "flixel-addons",
@@ -23,12 +23,12 @@
     {
       "name": "flixel-tools",
       "type": "haxelib",
-      "version": "1.5.1"
+      "version": null
     },
     {
       "name": "flixel-ui",
       "type": "haxelib",
-      "version": "2.5.0"
+      "version": null
     },
     {
       "name": "hxcpp",
@@ -43,7 +43,7 @@
     {
       "name": "SScript",
       "type": "haxelib",
-      "version": "11.0.618"
+      "version": null
     },
     {
       "name": "hxcpp-debug-server",
@@ -56,25 +56,25 @@
       "version": null
     },
     {
-      "name": "extension-androidtools",
+      "name": "linc_luajit",
       "type": "git",
       "dir": null,
-      "ref": "main",
-      "url": "https://github.com/MaysLastPlay77/extension-androidtools"
+      "ref": "master",
+      "url": "https://github.com/superpowers04/linc_luajit.git"
     },
     {
       "name": "flxanimate",
       "type": "git",
       "dir": null,
       "ref": "dev",
-      "url": "https://github.com/ShadowMario/flxanimate"
+      "url": "https://github.com/ShadowMario/flxanimate.git"
     },
     {
-      "name": "linc_luajit",
+      "name": "extension-androidtools",
       "type": "git",
       "dir": null,
-      "ref": "master",
-      "url": "https://github.com/superpowers04/linc_luajit"
+      "ref": "main",
+      "url": "https://github.com/MaysLastPlay77/extension-androidtools.git"
     }
   ]
 }
