@@ -314,8 +314,13 @@ class HScript extends SScript
 		}
 	}
 
+  #if (SScript >= "7.7.0")
+	public function executeCode(?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):TeaCall {
+		if (funcToRun == null) return null;
+	#else
 	public function executeCode(?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Tea {
 		if (funcToRun == null) return null;
+	 #end
 
 		if(!exists(funcToRun)) {
 			#if LUA_ALLOWED
@@ -346,17 +351,28 @@ class HScript extends SScript
 		return callValue;
 	}
 
+  #if (SScript >= "7.7.0")
+	public function executeFunction(funcToRun:String = null, funcArgs:Array<Dynamic>):TeaCall {
+		if (funcToRun == null) return null;
+		return call(funcToRun, funcArgs);
+	}
+  #else
 	public function executeFunction(funcToRun:String = null, funcArgs:Array<Dynamic>):Tea {
 		if (funcToRun == null) return null;
 		return call(funcToRun, funcArgs);
 	}
+  #end
 
 	#if LUA_ALLOWED
 	public static function implement(funk:FunkinLua) {
 		funk.addLocalCallback("runHaxeCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Dynamic {
 			#if SScript
 			initHaxeModuleCode(funk, codeToRun, varsToBring);
+	    #if (SScript >= "7.7.0")
+			final retVal:TeaCall = funk.hscript.executeCode(funcToRun, funcArgs);
+			#else
 			final retVal:Tea = funk.hscript.executeCode(funcToRun, funcArgs);
+		  #end
 			if (retVal != null) {
 				if(retVal.succeeded)
 					return (retVal.returnValue == null || LuaUtils.isOfTypes(retVal.returnValue, [Bool, Int, Float, String, Array])) ? retVal.returnValue : null;
