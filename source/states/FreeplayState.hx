@@ -160,9 +160,15 @@ class FreeplayState extends MusicBeatState
 		bottomBG.alpha = 0.6;
 		add(bottomBG);
 
+    #if mobile
+		var leText:String = "Tap on X to listen to the Song / Tap on C to open the Gameplay Changers Menu / Tap on Y to Reset your Score and Accuracy.";
+		bottomString = leText;
+		var size:Int = 16;
+		#else
 		var leText:String = "Press SPACE to listen to the Song / Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
 		bottomString = leText;
 		var size:Int = 16;
+		#end
 		bottomText = new FlxText(bottomBG.x, bottomBG.y + 4, FlxG.width, leText, size);
 		bottomText.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, CENTER);
 		bottomText.scrollFactor.set();
@@ -174,6 +180,9 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		updateTexts();
 		super.create();
+			#if mobile
+      addVirtualPad(LEFT_FULL, A_B_C_X_Y);
+			#end
 	}
 
 	override function closeSubState() {
@@ -306,12 +315,15 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 
-		if(FlxG.keys.justPressed.CONTROL && !player.playingMusic)
+		if(FlxG.keys.justPressed.CONTROL #if mobile || virtualPad.buttonC.justPressed #end && !player.playingMusic)
 		{
+		  #if mobile
+		  removeVirtualPad();
+		  #end
 			persistentUpdate = false;
 			openSubState(new GameplayChangersSubstate());
 		}
-		else if(FlxG.keys.justPressed.SPACE)
+		else if(FlxG.keys.justPressed.SPACE #if mobile || virtualPad.buttonX.justPressed #end)
 		{
 			if(instPlaying != curSelected && !player.playingMusic)
 			{
@@ -404,8 +416,11 @@ class FreeplayState extends MusicBeatState
 			DiscordClient.loadModRPC();
 			#end
 		}
-		else if(controls.RESET && !player.playingMusic)
+		else if(controls.RESET #if mobile || virtualPad.buttonY.justPressed #end && !player.playingMusic)
 		{
+		 #if mobile
+		 removeVirtualPad();
+		 #end
 			persistentUpdate = false;
 			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
 			FlxG.sound.play(Paths.sound('scrollMenu'));

@@ -10,6 +10,8 @@ import flixel.util.FlxDestroyUtil;
 import mobile.flixel.FlxButton;
 import openfl.display.BitmapData;
 import openfl.utils.Assets;
+import mobile.flixel.input.FlxMobileInputManager;
+import mobile.flixel.input.FlxMobileInputID;
 
 enum FlxDPadMode
 {
@@ -43,27 +45,29 @@ enum FlxActionMode
  * @author Ka Wing Chin
  * @author Mihai Alexandru (M.A. Jigsaw)
  */
-class FlxVirtualPad extends FlxSpriteGroup
+class FlxVirtualPad extends FlxMobileInputManager
 {
-	public var buttonLeft:FlxButton = new FlxButton(0, 0);
-	public var buttonUp:FlxButton = new FlxButton(0, 0);
-	public var buttonRight:FlxButton = new FlxButton(0, 0);
-	public var buttonDown:FlxButton = new FlxButton(0, 0);
+	public var buttonLeft:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.LEFT, FlxMobileInputID.noteLEFT]);
+	public var buttonUp:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.UP, FlxMobileInputID.noteUP]);
+	public var buttonRight:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.RIGHT, FlxMobileInputID.noteRIGHT]);
+	public var buttonDown:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.DOWN, FlxMobileInputID.noteDOWN]);
 
-	public var buttonLeft2:FlxButton = new FlxButton(0, 0);
-	public var buttonUp2:FlxButton = new FlxButton(0, 0);
-	public var buttonRight2:FlxButton = new FlxButton(0, 0);
-	public var buttonDown2:FlxButton = new FlxButton(0, 0);
+	public var buttonLeft2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.LEFT2, FlxMobileInputID.noteLEFT]);
+	public var buttonUp2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.UP2, FlxMobileInputID.noteUP]);
+	public var buttonRight2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.RIGHT2, FlxMobileInputID.noteRIGHT]);
+	public var buttonDown2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.DOWN2, FlxMobileInputID.noteDOWN]);
 
-	public var buttonA:FlxButton = new FlxButton(0, 0);
-	public var buttonB:FlxButton = new FlxButton(0, 0);
-	public var buttonC:FlxButton = new FlxButton(0, 0);
-	public var buttonD:FlxButton = new FlxButton(0, 0);
-	public var buttonE:FlxButton = new FlxButton(0, 0);
-	public var buttonV:FlxButton = new FlxButton(0, 0);
-	public var buttonX:FlxButton = new FlxButton(0, 0);
-	public var buttonY:FlxButton = new FlxButton(0, 0);
-	public var buttonZ:FlxButton = new FlxButton(0, 0);
+	public var buttonA:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.A]);
+	public var buttonB:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.B]);
+	public var buttonC:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.C]);
+	public var buttonD:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.D]);
+	public var buttonE:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.E]);
+	public var buttonV:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.V]);
+	public var buttonX:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.X]);
+	public var buttonY:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.Y]);
+	public var buttonZ:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.Z]);
+
+	var storedButtonsIDs:Map<String, Array<FlxMobileInputID>> = new Map<String, Array<FlxMobileInputID>>();
 
 	/**
 	 * Create a gamepad.
@@ -74,7 +78,11 @@ class FlxVirtualPad extends FlxSpriteGroup
 	public function new(DPad:FlxDPadMode, Action:FlxActionMode)
 	{
 		super();
-
+		for (button in Reflect.fields(this))
+		{
+			if (Std.isOfType(Reflect.field(this, button), FlxButton))
+				storedButtonsIDs.set(button, Reflect.getProperty(Reflect.field(this, button), 'IDs'));
+		}
 		switch (DPad)
 		{
 			case UP_DOWN:
@@ -155,8 +163,13 @@ class FlxVirtualPad extends FlxSpriteGroup
 				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
 			case NONE: // do nothing
 		}
-
+		for (button in Reflect.fields(this))
+		{
+			if (Std.isOfType(Reflect.field(this, button), FlxButton))
+				Reflect.setProperty(Reflect.getProperty(this, button), 'IDs', storedButtonsIDs.get(button));
+		}
 		scrollFactor.set();
+		updateTrackedButtons();
 	}
 
 	/**

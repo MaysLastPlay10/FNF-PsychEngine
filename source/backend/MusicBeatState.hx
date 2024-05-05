@@ -4,13 +4,11 @@ import flixel.addons.ui.FlxUIState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxState;
 import backend.PsychCamera;
-#if mobile
 import mobile.MobileControls;
 import mobile.flixel.FlxVirtualPad;
 import flixel.FlxCamera;
 import flixel.input.actions.FlxActionInput;
 import flixel.util.FlxDestroyUtil;
-#end
 
 class MusicBeatState extends FlxUIState
 {
@@ -30,11 +28,11 @@ class MusicBeatState extends FlxUIState
 
 	public static var instance:MusicBeatState;
 	
-/*	#if mobile
 	public var mobileControls:MobileControls;
 	public var virtualPad:FlxVirtualPad;
-	public var trackedInputsMobileControls:Array<FlxActionInput> = [];
-	public var trackedInputsVirtualPad:Array<FlxActionInput> = [];
+
+	public var vpadCam:FlxCamera;
+	public var camControls:FlxCamera;
 
 	public function addVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
 	{
@@ -54,25 +52,11 @@ class MusicBeatState extends FlxUIState
 
 	public function addMobileControls(DefaultDrawTarget:Bool = false)
 	{
-		if (mobileControls != null)
-			removeMobileControls();
-
 		mobileControls = new MobileControls();
 
-		switch (MobileControls.mode)
-		{
-			case 'Pad-Right' | 'Pad-Left' | 'Pad-Custom':
-				//controls.setVirtualPadNOTES(mobileControls.virtualPad, RIGHT_FULL, NONE);
-			case 'Pad-Duo':
-				//controls.setVirtualPadNOTES(mobileControls.virtualPad, BOTH_FULL, NONE);
-			case 'Hitbox':
-				//controls.setHitBox(mobileControls.hitbox);
-			case 'Keyboard': // do nothing
-		}
-
-		var camControls:FlxCamera = new FlxCamera();
-		FlxG.cameras.add(camControls, DefaultDrawTarget);
+		camControls = new FlxCamera();
 		camControls.bgColor.alpha = 0;
+		FlxG.cameras.add(camControls, DefaultDrawTarget);
 
 		mobileControls.cameras = [camControls];
 		mobileControls.visible = false;
@@ -90,20 +74,18 @@ class MusicBeatState extends FlxUIState
 	{
 		if (virtualPad != null)
 		{
-			var camControls:FlxCamera = new FlxCamera();
-			FlxG.cameras.add(camControls, DefaultDrawTarget);
-			camControls.bgColor.alpha = 0;
-			virtualPad.cameras = [camControls];
+			vpadCam = new FlxCamera();
+			FlxG.cameras.add(vpadCam, DefaultDrawTarget);
+			vpadCam.bgColor.alpha = 0;
+			virtualPad.cameras = [vpadCam];
 		}
 	}
-	#end
 
 	override function destroy()
 	{
 
 		super.destroy();
 
-		#if mobile
 		if (virtualPad != null)
 		{
 			virtualPad = FlxDestroyUtil.destroy(virtualPad);
@@ -115,8 +97,7 @@ class MusicBeatState extends FlxUIState
 			mobileControls = FlxDestroyUtil.destroy(mobileControls);
 			mobileControls = null;
 		}
-		#end
-	}*/
+	}
 
 	var _psychCameraInitialized:Bool = false;
 
