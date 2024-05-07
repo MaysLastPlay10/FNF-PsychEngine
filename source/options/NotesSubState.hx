@@ -153,7 +153,7 @@ class NotesSubState extends MusicBeatSubstate
     #if desktop
 		var tip:FlxText = new FlxText(tipX, tipY, 0, "Press RELOAD to Reset the selected Note Part.", 16);
 		#else
-		var tip:FlxText = new FlxText(tipX, tipY, 0, "Press A to Reset the selected Note Part.", 16);
+		var tip:FlxText = new FlxText(tipX, tipY, 0, "Press C to Reset the selected Note Part.", 16);
 		#end
 		tip.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tip.borderSize = 2;
@@ -176,16 +176,18 @@ class NotesSubState extends MusicBeatSubstate
 		_lastControllerMode = controls.controllerMode;
 		
 		#if mobile
-		addVirtualPad(NONE, A_B);
+		addVirtualPad(NONE, B_C_E);
+		//virtualPad.x = idk
+		//virtualPad.y = idk too
 		#end
 	}
 
 	function updateTip()
 	{
 	  #if desktop
-		tipTxt.text = 'Hold ' + (!controls.controllerMode ? 'Shift' : 'Left Shoulder Button') + ' + Press RESET key to fully reset the selected Note.';
+	  tipTxt.text = 'Hold ' + (!controls.controllerMode ? 'Shift' : 'Left Shoulder Button') + ' + Press RESET key to fully reset the selected Note.';
 	  #else
-		tipTxt.text = 'Hold B + Press A key to fully reset the selected Note.';
+		tipTxt.text = 'Hold E + Press C button to fully reset the selected Note.';
 		#end
 	}
 
@@ -198,7 +200,7 @@ class NotesSubState extends MusicBeatSubstate
 		NUMPADSEVEN => '7', NUMPADEIGHT => '8', NUMPADNINE => '9', A => 'A', B => 'B', C => 'C', D => 'D', E => 'E', F => 'F'];
 
 	override function update(elapsed:Float) {
-		if (controls.BACK #if mobile || FlxG.android.justReleased.BACK #end) {
+		if (controls.BACK) {
 			FlxG.mouse.visible = false;
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			#if desktop
@@ -438,6 +440,7 @@ class NotesSubState extends MusicBeatSubstate
 			else if(pointerY() >= hexTypeLine.y && pointerY() < hexTypeLine.y + hexTypeLine.height &&
 					Math.abs(pointerX() - 1000) <= 84)
 			{
+			  FlxG.stage.window.textInputEnabled = true;
 				hexTypeNum = 0;
 				for (letter in alphabetHex.letters)
 				{
@@ -485,9 +488,9 @@ class NotesSubState extends MusicBeatSubstate
 				}
 			} 
 		}
-		else if(controls.RESET #if mobile || virtualPad.buttonA.justPressed || virtualPad.buttonB.justPressed #end && hexTypeNum < 0)
+		else if(controls.RESET #if mobile || virtualPad.buttonC.justPressed || virtualPad.buttonE.justPressed #end && hexTypeNum < 0)
 		{
-			if(FlxG.keys.pressed.SHIFT #if mobile ||  virtualPad.buttonB.justPressed #end || FlxG.gamepads.anyJustPressed(LEFT_SHOULDER))
+			if(FlxG.keys.pressed.SHIFT #if mobile ||  virtualPad.buttonE.justPressed #end || FlxG.gamepads.anyJustPressed(LEFT_SHOULDER))
 			{
 				for (i in 0...3)
 				{
